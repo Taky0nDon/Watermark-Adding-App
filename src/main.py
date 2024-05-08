@@ -1,3 +1,4 @@
+import io
 import tkinter as tk
 from pathlib import Path
 from tkinter import ttk
@@ -8,15 +9,17 @@ from PIL import Image
 from LocalImage import Localimage
 from Layout import Layout
 
+def get_Image_object(path: Path):
+    img = Image.open(path)
+    return img
+
+
 def get_BitmapImage(**kwargs):
-    layout.display_widget(hidden_label)
-    img_path = image_path.get()
-    local_image.image_path = img_path
-    img = Image.Image(img_path)
-    print("Accessing image located at", img_path)
-    layout.show_it = True
-    print(layout.show_it)
-    # return ImageTk.PhotoImage(img)
+    tk_compatible_image = tk.PhotoImage(file=image_path.get())
+    img_label = ttk.Label(image=tk_compatible_image)
+    img_label['image'] = tk_compatible_image
+    img_label.grid(row=0, column=2)
+    
     
 
 local_image = Localimage()
@@ -30,6 +33,9 @@ root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
 
 image_path = tk.StringVar()
+image = tk.PhotoImage(file="/home/mike/bg/space.png")
+test_image_label = ttk.Label(image=image)
+test_image_label.grid(column=1, row=1)
 image_path_entry = ttk.Entry(mainframe, width=7, textvariable=image_path)
 image_path_entry.insert(0, "/home/mike/bg/space.png")
 image_path_entry.grid(column=0, row=1, columnspan=4, sticky="WE")
@@ -39,8 +45,7 @@ meters = tk.StringVar()
 #         .grid(column=2, row=2, sticky="WE")
 
 hidden_label = ttk.Label(mainframe, text="I have not used my grid method")
-ttk.Button(mainframe, text="Select", command=get_BitmapImage) .grid(column=3,
-                                                                    row=3,
+ttk.Button(mainframe, text="Select", command=get_BitmapImage) .grid(column=3, row=3,
                                                                     sticky="W")
 
 ttk.Label(mainframe, text="Choose an image to watermark:")\
