@@ -9,10 +9,10 @@ from LocalImage import Localimage
 from Layout import Layout
 
 def get_BitmapImage(**kwargs):
-    layout.display_image()
+    layout.display_widget(hidden_label)
     img_path = image_path.get()
     local_image.image_path = img_path
-    img = Image.open(img_path)
+    img = Image.Image(img_path)
     print("Accessing image located at", img_path)
     layout.show_it = True
     print(layout.show_it)
@@ -38,8 +38,10 @@ meters = tk.StringVar()
 # ttk.Label(mainframe, textvariable=meters)\
 #         .grid(column=2, row=2, sticky="WE")
 
-ttk.Button(mainframe, text="Select", command=get_BitmapImage)\
-        .grid(column=3, row=3, sticky="W")
+hidden_label = ttk.Label(mainframe, text="I have not used my grid method")
+ttk.Button(mainframe, text="Select", command=get_BitmapImage) .grid(column=3,
+                                                                    row=3,
+                                                                    sticky="W")
 
 ttk.Label(mainframe, text="Choose an image to watermark:")\
     .grid(column=2, row=0, sticky="E") 
@@ -52,6 +54,7 @@ hide = ttk.Button(mainframe, text="Hide", command=layout.hide_image)\
 for child in mainframe.winfo_children():
     child.grid_configure(padx=5, pady=5)
 
+hidden_label.grid_remove()
 image_path_entry.focus()
 
 
