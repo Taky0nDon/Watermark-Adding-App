@@ -13,5 +13,5 @@ class Layout:
     def display_widget(self, widget: ttk.Widget):
         widget.grid(row=1, column=1)
 
-    def hide_image(self):
-        self.the_label.grid_remove()
+    def hide_image(self, widget: ttk.Widget):
+        widget.grid_remove()
