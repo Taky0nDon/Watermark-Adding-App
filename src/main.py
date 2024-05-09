@@ -21,44 +21,41 @@ def get_BitmapImage(**kwargs):
     img_label.grid(row=0, column=2)
     
     
-
-local_image = Localimage()
+SUBSAMPLE_FACTOR = 3
+TEST_PHOTO_PATH = "/home/mike/bg/space.png"
 root = tk.Tk()
 root.title("Watermark Me")
 mainframe = ttk.Frame(root, padding="3 3 12 12")
-layout = Layout(mainframe)
-
 mainframe.grid(column=0, row=0, sticky="NWES")
 root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
 
-image_path = tk.StringVar()
-image = tk.PhotoImage(file="/home/mike/bg/space.png")
-test_image_label = ttk.Label(image=image)
-test_image_label.grid(column=1, row=1)
-image_path_entry = ttk.Entry(mainframe, width=7, textvariable=image_path)
-image_path_entry.insert(0, "/home/mike/bg/space.png")
-image_path_entry.grid(column=0, row=1, columnspan=4, sticky="WE")
+local_image = Localimage()
+layout = Layout(mainframe)
 
-meters = tk.StringVar()
-# ttk.Label(mainframe, textvariable=meters)\
-#         .grid(column=2, row=2, sticky="WE")
+image_path = tk.StringVar()
+image_path_entry = ttk.Entry(mainframe, width=7, textvariable=image_path)
+image_path_entry.insert(0,TEST_PHOTO_PATH)
+image = tk.PhotoImage(file=Path(image_path.get())).subsample(SUBSAMPLE_FACTOR)
+test_image_label = ttk.Label(image=image, width=200)
 
 hidden_label = ttk.Label(mainframe, text="I have not used my grid method")
-ttk.Button(mainframe, text="Select", command=get_BitmapImage) .grid(column=3, row=3,
-                                                                    sticky="W")
+select_button = ttk.Button(mainframe, text="Select",
+                           command=lambda x=test_image_label: layout.display_widget(x))
 
-ttk.Label(mainframe, text="Choose an image to watermark:")\
-    .grid(column=2, row=0, sticky="E") 
+entry_label = ttk.Label(mainframe, text="Choose an image to watermark:")
 
-hide = ttk.Button(mainframe, text="Hide", command=layout.hide_image)\
-        .grid(column=0, row=3, sticky="E")
-# ttk.Label(mainframe, text="meters")\
-#         .grid(column=3, row=2, sticky=W)
+hide = ttk.Button(mainframe, text="Hide", command= lambda x=test_image_label:
+                  layout.hide_image(x))
 
 for child in mainframe.winfo_children():
     child.grid_configure(padx=5, pady=5)
 
+entry_label.grid(column=2, row=0, sticky="E")
+hide.grid(column=1, row=3, sticky="E")
+select_button.grid(column=3, row=3, sticky="W")
+image_path_entry.grid(column=0, row=1, columnspan=4, sticky="WE")
+test_image_label.grid(column=0, row=4, columnspan=4)
 hidden_label.grid_remove()
 image_path_entry.focus()
 
