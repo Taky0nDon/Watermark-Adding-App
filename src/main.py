@@ -23,7 +23,14 @@ def get_BitmapImage(**kwargs):
     
 SUBSAMPLE_FACTOR = 3
 TEST_PHOTO_PATH = "/home/mike/bg/space.png"
+PIL_TEST_PHOTO_PATH = "/home/mike/bg/cyberpunkcity.jpg"
+pil_test_img = Image.open(PIL_TEST_PHOTO_PATH).resize((480,270))
+
+
+
 root = tk.Tk()
+tk_image = ImageTk.PhotoImage(pil_test_img)
+
 root.title("Watermark Me")
 mainframe = ttk.Frame(root, padding="3 3 12 12")
 mainframe.grid(column=0, row=0, sticky="NWES")
@@ -37,7 +44,8 @@ image_path = tk.StringVar()
 image_path_entry = ttk.Entry(mainframe, width=7, textvariable=image_path)
 image_path_entry.insert(0,TEST_PHOTO_PATH)
 image = tk.PhotoImage(file=Path(image_path.get())).subsample(SUBSAMPLE_FACTOR)
-test_image_label = ttk.Label(image=image, width=200)
+# test_image_label = ttk.Label(image=image, width=200)
+test_image_label = ttk.Label(image=tk_image, width=200)
 
 hidden_label = ttk.Label(mainframe, text="I have not used my grid method")
 select_button = ttk.Button(mainframe, text="Select",
