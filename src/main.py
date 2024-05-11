@@ -20,7 +20,7 @@ class State:
 SUBSAMPLE_FACTOR = 3
 TEST_PHOTO_PATH = "/home/mike/bg/space.png"
 PIL_TEST_PHOTO_PATH = "/home/mike/bg/cyberpunkcity.jpg"
-
+entry_label_col, entry_label_row = 0, 0 
 pil_test_img = Image.open(PIL_TEST_PHOTO_PATH).resize((480,270))
 
 
@@ -29,10 +29,9 @@ root = tk.Tk()
 root.title("Watermark Me")
 mainframe = ttk.Frame(root, padding="3 3 12 12")
 mainframe.grid(column=0, row=0, sticky="NWES")
-root.columnconfigure(0, weight=1)
-root.rowconfigure(0, weight=1)
+# root.columnconfigure(0, weight=1)
+# root.rowconfigure(0, weight=1)
 
-local_image = Localimage()
 layout = Layout(mainframe)
 
 image_path = tk.StringVar()
@@ -48,16 +47,17 @@ entry_label = ttk.Label(mainframe, text="Choose an image to watermark:", borderw
 hide_button = ttk.Button(mainframe, text="Hide", command= lambda x=test_image_label:
                   layout.hide_image(x))
 test_text_label = ttk.Label(mainframe, text="here i am")
+empty_label = ttk.Label(mainframe, text="")
 
 for child in mainframe.winfo_children():
-    pass
-    # child.grid_configure(padx=5, pady=5)
+    child.grid_configure(padx=5, pady=5)
 
-entry_label.grid(column=0, row=1)
+entry_label.grid(column=entry_label_col, row=entry_label_col)
 image_path_entry.grid(column=0, row=2)
 hide_button.grid(column=0, row=3)
 select_button.grid(column=0, row=4)
 test_image_label.grid(column=0, row=5, pady=1)
+empty_label.grid(column=0, row=6)
 
 
 image_path_entry.focus()
