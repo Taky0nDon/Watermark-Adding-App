@@ -8,6 +8,12 @@ IMAGE_RESIZE_FACTOR = 5
 class Layout:
     def __init__(self, frame):
         self.frame = frame
+        self.current_image = None
+        self.current_imagetk = None
+        self.watermark_image = None
+        self.superimposed_img = None
+        self.superimposed_img_tk = None
+        self.watermark_photoimage = None
         self.watermark_path_var = tk.StringVar()
         self.image_path_var = tk.StringVar()
         self.image_path_entry = ttk.Entry(frame, textvariable=self.image_path_var)
@@ -21,6 +27,10 @@ class Layout:
                                                   text="Choose a watermark",
                                                   command=self.display_watermark
                                                   )
+        self.superimpose_button = ttk.Button(frame,
+                                             text="Overlay image",
+                                             command=self.generate_super_imposed_img
+                                             )
         self.image_display = ttk.Label(frame)
         self.watermark_display_label = ttk.Label(frame)
         self.image_description_label = ttk.Label(frame,
@@ -29,8 +39,7 @@ class Layout:
         self.watermark_description_label = ttk.Label(frame,
                                                  text="Watermark:"
                                                  )
-        self.current_image = None
-        self.current_imagetk = None
+        self.superimposed_img_display = ttk.Label(frame)
 
     def set_image(self):
         self.image_path_str = self.image_path_var.get()
@@ -40,16 +49,18 @@ class Layout:
                                message=f"The path {self.image_path_str} does not exit"
                                  )
             return
-        self.current_image = Image.open(self.image_path_var.get())
+        current_image = Image.open(self.image_path_var.get())
 #            .resize(get_img_display_size(self.current_image))
-        orig_width, orig_height = self.current_image.size
+        orig_width, orig_height = current_image.size
         new_width = orig_width//IMAGE_RESIZE_FACTOR
         new_height = orig_height//IMAGE_RESIZE_FACTOR
+        self.current_image = current_image.resize((new_width, new_height))
         self.current_imagetk = ImageTk.PhotoImage(self.current_image.resize((new_width, new_height)))
 
 
     def display_image(self):
         self.set_image()
+        print(type(self.current_imagetk))
         self.image_display.configure(image=self.current_imagetk)
 
 
@@ -60,16 +71,28 @@ class Layout:
                                message=f"The path {self.watermark_path.as_posix()} does not exit"
                                  )
             return
-        self.watermark_image = Image.open(self.watermark_path)
-        orig_width, orig_height = self.watermark_image.size
+        watermark_image = Image.open(self.watermark_path)
+        orig_width, orig_height = watermark_image.size
         new_width = orig_width//IMAGE_RESIZE_FACTOR
         new_height = orig_height//IMAGE_RESIZE_FACTOR
-        self.watermark_photoimage = ImageTk.PhotoImage(self.watermark_image.resize((new_width, new_height)))
+        self.watermark_image = watermark_image.resize((new_width, new_height))
+        self.watermark_photoimage = ImageTk.PhotoImage(self.watermark_image)
 
 
     def display_watermark(self):
         self.set_watermark(self.watermark_path_var.get())
         self.watermark_display_label.configure(image=self.watermark_photoimage)
+
+    def generate_super_imposed_img(self):
+        bg_pil = self.current_image
+        fg_pil = self.watermark_image
+        bg_pil.paste(fg_pil)
+        self.superimposed_img = bg_pil
+        self.superimposed_img_tk = ImageTk.PhotoImage(self.superimposed_img)
+        self.superimposed_img_display.configure(image=self.superimposed_img_tk)
+        # the alpha channel is caushing all the negative space to appear the same color as
+        # the blue part of the icon. Need to get paste to respect transparent parts of 
+        # watermark
 
 
 def path_is_valid(path: Path) -> bool:
