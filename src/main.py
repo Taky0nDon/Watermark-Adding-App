@@ -9,8 +9,8 @@ from PIL import Image
 
 from Layout import Layout
 
-DEFAULT_FOLDER = PurePath("/home", "mike", "bg")
-WATERMARK_DIR = Path(os.getcwd(), "..", "assets", "img")
+DEFAULT_FOLDER = PurePath("/home", "mike", "bg", "space.png")
+WATERMARK_DIR = Path(os.getcwd(), "..", "assets", "img", "python-watermark.png")
 print(DEFAULT_FOLDER.as_posix())
 # why does the resize method call behave differently when i inline it
 # instead of doing pil_test_img.resize() on a separate line?
@@ -38,6 +38,7 @@ layout.image_description_label.grid(column=0, row=2)
 layout.watermark_description_label.grid(column=1, row=2)
 layout.image_display.grid(column=0, row=3)
 layout.watermark_display_label.grid(column=1, row=3)
+layout.superimposed_img_display.grid(column=0, columnspan=2, row=4)
 
 
 layout.image_path_entry.focus()
