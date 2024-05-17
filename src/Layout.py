@@ -3,6 +3,7 @@ from pathlib import Path
 from tkinter import PhotoImage, ttk, messagebox
 from PIL import Image, ImageTk
 
+IMAGE_RESIZE_FACTOR = 5
 
 class Layout:
     def __init__(self, frame):
@@ -42,9 +43,9 @@ class Layout:
         self.current_image = Image.open(self.image_path_var.get())
 #            .resize(get_img_display_size(self.current_image))
         orig_width, orig_height = self.current_image.size
-        new_width = orig_width//4
-        new_height = orig_height//4
-        self.current_imagetk = ImageTk.PhotoImage(self.current_image)
+        new_width = orig_width//IMAGE_RESIZE_FACTOR
+        new_height = orig_height//IMAGE_RESIZE_FACTOR
+        self.current_imagetk = ImageTk.PhotoImage(self.current_image.resize((new_width, new_height)))
 
 
     def display_image(self):
@@ -59,8 +60,11 @@ class Layout:
                                message=f"The path {self.watermark_path.as_posix()} does not exit"
                                  )
             return
-        self.watermark_image = Image.open(self.watermark_path).resize(self.image_display_size)
-        self.watermark_photoimage = ImageTk.PhotoImage(self.watermark_image)
+        self.watermark_image = Image.open(self.watermark_path)
+        orig_width, orig_height = self.watermark_image.size
+        new_width = orig_width//IMAGE_RESIZE_FACTOR
+        new_height = orig_height//IMAGE_RESIZE_FACTOR
+        self.watermark_photoimage = ImageTk.PhotoImage(self.watermark_image.resize((new_width, new_height)))
 
 
     def display_watermark(self):
