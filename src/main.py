@@ -9,9 +9,10 @@ from PIL import Image
 
 from Layout import Layout
 
-DEFAULT_FOLDER = PurePath("/home", "mike", "bg", "space.png")
-WATERMARK_DIR = Path(os.getcwd(), "..", "assets", "img", "python-watermark.png")
-print(DEFAULT_FOLDER.as_posix())
+DEFAULT_FOLDER = PurePath("/home", "mike", "bg")
+WATERMARK_DIR = Path(Path(os.getcwd()).parent, "assets", "img")
+TEST_BG = PurePath(DEFAULT_FOLDER, "space.png")
+TEST_FG = Path(WATERMARK_DIR, "python-watermark.png") 
 # why does the resize method call behave differently when i inline it
 # instead of doing pil_test_img.resize() on a separate line?
 
@@ -23,8 +24,8 @@ mainframe = ttk.Frame(root, padding="3 3 12 12")
 mainframe.grid(column=0, row=0, sticky="NWES")
 
 layout = Layout(mainframe)
-layout.image_path_entry.insert(0,DEFAULT_FOLDER.as_posix())
-layout.watermark_path_entry.insert(0, WATERMARK_DIR.as_posix())
+layout.image_path_entry.insert(0,TEST_BG.as_posix())
+layout.watermark_path_entry.insert(0, TEST_FG.as_posix())
 
 
 for child in mainframe.winfo_children():

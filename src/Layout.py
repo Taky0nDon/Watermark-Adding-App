@@ -1,12 +1,16 @@
+import os
 import tkinter as tk
 from pathlib import Path
 from tkinter import PhotoImage, ttk, messagebox
 from PIL import Image, ImageTk
 
 IMAGE_RESIZE_FACTOR = 5
+SAVE_DIR = Path(os.environ["OLDPWD"], "user_images")
 
 class Layout:
     def __init__(self, frame):
+        self.save_path = os.environ
+        print(self.save_path)
         self.frame = frame
         self.current_image = None
         self.current_imagetk = None
@@ -49,7 +53,14 @@ class Layout:
                                                  text="Watermark:"
                                                  )
         self.superimposed_img_display = ttk.Label(frame)
+        self.button_save = ttk.Button(frame,
+                                      text="Save.",
+                                      command=self.save_img
+                                      )
         self.button_exit_app = ttk.Button(frame, text="Exit", command=exit)
+
+    def save_img(self):
+        self.superimposed_img.save(fp=f"{SAVE_DIR}/test.png")
 
     def set_image(self):
         self.image_path_str = self.image_path_var.get()
@@ -99,9 +110,6 @@ class Layout:
         self.watermark_display_label.configure(image=self.watermark_photoimage)
 
     def generate_super_imposed_img(self):
-        if self.superimposed_img is None:
-            print("first time clicking the button")
-            self.orig_bg_copy = self.current_image.copy()
         coords = [int(e) for e in self.fg_position.get().split(",")]
         self.fg_x_position = coords[0]
         self.fg_y_position = coords[1]
