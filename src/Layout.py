@@ -10,7 +10,7 @@ class Layout:
         self.frame = frame
         self.current_image = None
         self.current_imagetk = None
-        self.watermark_image = None
+        self.watermark_image = Image.new("RGBA", (1, 1))
         self.superimposed_img = None
         self.superimposed_img_tk = None
         self.watermark_photoimage = None
@@ -20,14 +20,14 @@ class Layout:
         self.watermark_path_entry = ttk.Entry(frame,
                                               textvariable=self.watermark_path_var
                                               )
-        self.select_image_button = ttk.Button(frame,
+        self.btn_select_bg = ttk.Button(frame,
                                         text="Choose an image to display",
                                         command=self.display_image)
         self.select_watermark_button = ttk.Button(frame,
                                                   text="Choose a watermark",
                                                   command=self.display_watermark
                                                   )
-        self.superimpose_button = ttk.Button(frame,
+        self.btn_superimpose = ttk.Button(frame,
                                              text="Overlay image",
                                              command=self.generate_super_imposed_img
                                              )
@@ -40,6 +40,7 @@ class Layout:
                                                  text="Watermark:"
                                                  )
         self.superimposed_img_display = ttk.Label(frame)
+        self.button_exit_app = ttk.Button(frame, text="Exit", command=exit)
 
     def set_image(self):
         self.image_path_str = self.image_path_var.get()
@@ -84,10 +85,10 @@ class Layout:
         self.watermark_display_label.configure(image=self.watermark_photoimage)
 
     def generate_super_imposed_img(self):
-        bg_pil = self.current_image
-        fg_pil = self.watermark_image
-        bg_pil.paste(fg_pil)
-        self.superimposed_img = bg_pil
+        pil_bg = self.current_image
+        pil_fg = self.watermark_image
+        pil_bg.paste(pil_fg)
+        self.superimposed_img = pil_bg
         self.superimposed_img_tk = ImageTk.PhotoImage(self.superimposed_img)
         self.superimposed_img_display.configure(image=self.superimposed_img_tk)
         # the alpha channel is caushing all the negative space to appear the same color as
