@@ -32,7 +32,9 @@ for child in mainframe.winfo_children():
 
 layout.btn_select_bg.grid(column=0, row=0, sticky="W")
 layout.image_path_entry.grid(column=1, row=0)
-layout.btn_superimpose.grid(column=2, row=0)
+layout.label_fg_position.grid(column=3, row=0)
+layout.entry_fg_position.grid(column=4, row=0)
+layout.btn_superimpose.grid(column=3, row=1)
 layout.select_watermark_button.grid(column=0, row=1, sticky="W")
 layout.watermark_path_entry.grid(column=1, row=1)
 layout.image_description_label.grid(column=0, row=2)

@@ -14,8 +14,11 @@ class Layout:
         self.superimposed_img = None
         self.superimposed_img_tk = None
         self.watermark_photoimage = None
+        self.fg_x_position = 0
+        self.fg_y_position = 0
         self.watermark_path_var = tk.StringVar()
         self.image_path_var = tk.StringVar()
+        self.fg_position = tk.StringVar(value="0,0")
         self.image_path_entry = ttk.Entry(frame, textvariable=self.image_path_var)
         self.watermark_path_entry = ttk.Entry(frame,
                                               textvariable=self.watermark_path_var
@@ -27,6 +30,12 @@ class Layout:
                                                   text="Choose a watermark",
                                                   command=self.display_watermark
                                                   )
+        self.entry_fg_position = ttk.Entry(frame,
+                                           textvariable=self.fg_position
+                                           )
+        self.label_fg_position = ttk.Label(frame,
+                                           text="Overlay position (x, y)"
+                                           )
         self.btn_superimpose = ttk.Button(frame,
                                              text="Overlay image",
                                              command=self.generate_super_imposed_img
@@ -59,6 +68,11 @@ class Layout:
         self.current_imagetk = ImageTk.PhotoImage(self.current_image.resize((new_width, new_height)))
 
 
+    def set_foreground_position(self):
+        coords = [int(e) for e in self.fg_position.get().split(",")]
+        self.fg_x_position = coords[0]
+        self.fg_y_position = coords[1]
+
     def display_image(self):
         self.set_image()
         print(type(self.current_imagetk))
@@ -85,9 +99,22 @@ class Layout:
         self.watermark_display_label.configure(image=self.watermark_photoimage)
 
     def generate_super_imposed_img(self):
-        pil_bg = self.current_image
+        if self.superimposed_img is None:
+            print("first time clicking the button")
+            self.orig_bg_copy = self.current_image.copy()
+        coords = [int(e) for e in self.fg_position.get().split(",")]
+        self.fg_x_position = coords[0]
+        self.fg_y_position = coords[1]
+# this way the original background is preserved so the overlay can be moved
+# without stamping the foreground all over it.
+        pil_bg = self.current_image.copy()
         pil_fg = self.watermark_image
-        pil_bg.paste(pil_fg)
+        try:
+            pil_bg.paste(pil_fg, 
+                         box=(self.fg_x_position, self.fg_y_position)
+                         )
+        except AttributeError:
+            pil_bg = pil_fg
         self.superimposed_img = pil_bg
         self.superimposed_img_tk = ImageTk.PhotoImage(self.superimposed_img)
         self.superimposed_img_display.configure(image=self.superimposed_img_tk)
