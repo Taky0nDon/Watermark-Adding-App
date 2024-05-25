@@ -77,7 +77,6 @@ class Layout:
 
     def display_bg_img(self)-> None:
         self.set_bg_image()
-        print(type(self.imgtk_bg))
         self.image_display.configure(image=self.imgtk_bg)
 
 
@@ -110,11 +109,10 @@ class Layout:
 # without stamping the foreground all over it.
             pil_bg = self.pil_bg.convert(mode="RGBA")
             pil_fg = self.pil_fg.convert(mode="RGBA")
-            mask = pil_fg.copy().convert("L")
             try:
                 pil_bg.paste(pil_fg, 
                              box=(self.fg_x_position, self.fg_y_position),
-                             mask=mask
+                             mask=pil_fg
                              )
             except AttributeError:
                 pil_bg = pil_fg
