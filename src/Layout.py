@@ -34,7 +34,7 @@ class Layout:
                                            text="Overlay position (x, y)"
                                            )
         self.btn_superimpose = ttk.Button(frame, text="Overlay image",
-                                          command=lambda x=self.fg_position.get(): self.display_superimposed_image(x)
+                                          command=self.display_superimposed_image
                                          )
         self.label_bg_display = ttk.Label(frame)
         self.label_fg_display = ttk.Label(frame)
@@ -60,7 +60,8 @@ class Layout:
             self.show_error("no_path")
 
 
-    def display_superimposed_image(self, pos) -> None:
+    def display_superimposed_image(self) -> None:
+        pos = self.fg_position.get()
         img_mgr.generate_superimposed_img(pos)
         self.superimposed_img_display.configure(image=img_mgr.imgtk_superimposed)
 
