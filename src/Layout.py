@@ -4,11 +4,14 @@ from pathlib import Path
 from tkinter import PhotoImage, ttk, messagebox
 from PIL import Image, ImageTk
 
-IMAGE_RESIZE_FACTOR = 5
+
+from ImageManager import ImageManager
+
 SAVE_DIR = Path(os.environ["OLDPWD"], "user_images")
 
 class Layout:
     def __init__(self, frame):
+        self.img_mgr = ImageManager()
         self.frame = frame
         self.pil_bg = None
         self.imgtk_bg = None
@@ -47,28 +50,7 @@ class Layout:
         self.image_description_label = ttk.Label(frame, text="Image:")
         self.watermark_description_label = ttk.Label(frame, text="Watermark:")
         self.superimposed_img_display = ttk.Label(frame)
-        self.button_save = ttk.Button(frame, text="Save.", command=self.save_img)
-
-    def save_img(self) -> None:
-        if self.pil_superimposed is not None:
-            self.pil_superimposed.save(fp=f"{SAVE_DIR}/test.png")
-
-    def set_bg_image(self)-> None:
-        self.image_path_str = self.bg_path_stringvar.get()
-        self.image_path = Path(self.image_path_str)
-        if not path_is_valid(self.image_path):
-            messagebox.showerror(self.frame,
-                               message=f"The path {self.image_path_str} does not exit"
-                                 )
-            return
-        current_image = Image.open(self.bg_path_stringvar.get())
-#            .resize(get_img_display_size(self.current_image))
-        orig_width, orig_height = current_image.size
-        new_width = orig_width//IMAGE_RESIZE_FACTOR
-        new_height = orig_height//IMAGE_RESIZE_FACTOR
-        self.pil_bg = current_image.resize((new_width, new_height))
-        self.imgtk_bg = ImageTk.PhotoImage(self.pil_bg.resize((new_width, new_height)))
-
+        # self.button_save = ttk.Button(frame, text="Save.", command=self.save_img)
 
     def set_fg_position(self)-> None:
         coords = [int(e) for e in self.fg_position.get().split(",")]
@@ -76,29 +58,27 @@ class Layout:
         self.fg_y_position = coords[1]
 
     def display_bg_img(self)-> None:
-        self.set_bg_image()
-        self.image_display.configure(image=self.imgtk_bg)
-
-
-    def set_fg(self, watermark_path_var)-> None:
-        self.watermark_path = Path(watermark_path_var)
-        if not path_is_valid(self.watermark_path):
-            messagebox.showerror(self.frame,
-                               message=f"The path {self.watermark_path.as_posix()} does not exit"
-                                 )
-            return
-        watermark_image = Image.open(self.watermark_path)
-        orig_width, orig_height = watermark_image.size
-        new_width = orig_width//IMAGE_RESIZE_FACTOR
-        new_height = orig_height//IMAGE_RESIZE_FACTOR
-        self.pil_fg = watermark_image.resize((new_width, new_height))
-        self.imgtk_fg = ImageTk.PhotoImage(self.pil_fg)
+        self.img_mgr.set_bg_image(self.bg_path_stringvar.get())
+        if self.img_mgr.pil_bg:
+            self.image_display.configure(image=self.img_mgr.imgtk_bg)
+        else:
+            self.show_error("no_path")
 
 
     def display_fg(self)-> None:
         if self.pil_bg is not None:
             self.set_fg(self.fg_path_stringvar.get())
         self.watermark_display_label.configure(image=self.imgtk_fg)
+
+
+    def show_error(self, err, path=None):
+        msg = "Something went wrong."
+        if err == "no_path":
+            msg = f"The path {path} does not exit"
+        messagebox.showerror(self.frame,
+                             message=msg
+                            )
+
 
     def generate_superimposed_img(self)-> None:
         if self.pil_bg is not None:
@@ -127,11 +107,6 @@ class Layout:
         # the blue part of the icon. Need to get paste to respect transparent parts of 
         # watermark
 
-
-def path_is_valid(path: Path) -> bool:
-    if not path.exists():
-        return False
-    return True
 
 def get_img_display_size(img: Image.Image) -> tuple[int, int]:
     original_dim = img.size # (w, h)
