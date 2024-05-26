@@ -35,19 +35,46 @@ class ImageManager:
         self.pil_bg = current_image.resize((new_width, new_height))
         self.imgtk_bg = ImageTk.PhotoImage(self.pil_bg.resize((new_width, new_height)))
 
-    def set_fg(self, watermark_path_var)-> None:
-        self.watermark_path = Path(watermark_path_var)
-        if not path_is_valid(self.watermark_path):
-            messagebox.showerror(self.frame,
-                               message=f"The path {self.watermark_path.as_posix()} does not exit"
-                                 )
-            return
-        watermark_image = Image.open(self.watermark_path)
+    def set_fg_image(self, path: str)-> None:
+        watermark_image = Image.open(Path(path))
         orig_width, orig_height = watermark_image.size
-        new_width = orig_width//IMAGE_RESIZE_FACTOR
-        new_height = orig_height//IMAGE_RESIZE_FACTOR
+        new_width = orig_width//self.IMAGE_RESIZE_FACTOR
+        new_height = orig_height//self.IMAGE_RESIZE_FACTOR
         self.pil_fg = watermark_image.resize((new_width, new_height))
         self.imgtk_fg = ImageTk.PhotoImage(self.pil_fg)
+
+
+    def set_fg_position(self, pos_coords: str)-> None:
+        coords = [int(e) for e in pos_coords]
+        self.fg_x_position = coords[0]
+        self.fg_y_position = coords[1]
+
+
+    def generate_superimposed_img(self, fg_pos: str)-> None:
+        if self.pil_bg is not None:
+            coords = [int(e) for e in fg_pos.split(",")]
+            self.fg_x_position = coords[0]
+            self.fg_y_position = coords[1]
+# this way the original background is preserved so the overlay can be moved
+# without stamping the foreground all over it.
+            pil_bg = self.pil_bg.convert(mode="RGBA")
+            pil_fg = self.pil_fg.convert(mode="RGBA")
+            try:
+                pil_bg.paste(pil_fg, 
+                             box=(self.fg_x_position, self.fg_y_position),
+                             mask=pil_fg
+                             )
+            except AttributeError:
+                pil_bg = pil_fg
+            self.pil_superimposed = pil_bg
+            self.imgtk_superimposed = ImageTk.PhotoImage(self.pil_superimposed)
+        else:
+            messagebox.showerror(title="No background selected!",
+                                 message="You must choose a background image."
+                                 )
+        # the alpha channel is caushing all the negative space to appear the same color as
+        # the blue part of the icon. Need to get paste to respect transparent parts of 
+        # watermark
 
 
 def path_is_valid(path: Path) -> bool:
@@ -55,3 +82,8 @@ def path_is_valid(path: Path) -> bool:
         return False
     return True
 
+
+def get_img_display_size(img: Image.Image) -> tuple[int, int]:
+    original_dim = img.size # (w, h)
+    reduced_dim = original_dim[0]//4, original_dim[1]//4
+    return reduced_dim
