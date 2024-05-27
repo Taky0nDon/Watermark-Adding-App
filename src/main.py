@@ -33,6 +33,7 @@ for child in mainframe.winfo_children():
 
 layout.btn_select_bg.grid(column=0, row=0, sticky="W")
 layout.entry_bg_path.grid(column=1, row=0)
+layout.btn_select_bg_file.grid(column=5, row=0)
 layout.label_fg_position.grid(column=3, row=0)
 layout.entry_fg_position.grid(column=4, row=0)
 layout.btn_superimpose.grid(column=3, row=1)

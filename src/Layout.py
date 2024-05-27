@@ -2,6 +2,7 @@ import os
 import tkinter as tk
 from pathlib import Path
 from tkinter import PhotoImage, ttk, messagebox
+from tkinter.filedialog import FileDialog, askopenfile
 from PIL import Image, ImageTk
 
 
@@ -10,6 +11,7 @@ from ImageManager import ImageManager
 SAVE_DIR = Path(os.environ["OLDPWD"], "user_images")
 img_mgr = ImageManager()
 class Layout:
+    img_mgr = ImageManager()
     def __init__(self, frame):
         self.frame = frame
         self.fg_path_stringvar = tk.StringVar()
@@ -22,6 +24,9 @@ class Layout:
                                               )
         self.entry_fg_position = ttk.Entry(frame, textvariable=self.fg_position)
 
+        self.btn_select_bg_file = ttk.Button(frame, text="Choose background",
+                                             command=self.show_bg_file_dialog)
+        self.btn_select_fg_file = ttk.Button(frame)
         self.btn_select_bg = ttk.Button(frame,
                                         text="Choose an image to display",
                                         command=self.display_bg_img)
@@ -36,12 +41,20 @@ class Layout:
         self.btn_superimpose = ttk.Button(frame, text="Overlay image",
                                           command=self.display_superimposed_image
                                          )
+        self.button_save = ttk.Button(frame, text="Save.", command=img_mgr.save_img)
         self.label_bg_display = ttk.Label(frame)
         self.label_fg_display = ttk.Label(frame)
         self.image_description_label = ttk.Label(frame, text="Image:")
         self.watermark_description_label = ttk.Label(frame, text="Watermark:")
         self.superimposed_img_display = ttk.Label(frame)
-        self.button_save = ttk.Button(frame, text="Save.", command=img_mgr.save_img)
+
+    def show_bg_file_dialog(self):
+        askopenfile(parent=self.frame,
+                    title="Choose background image",
+                    initialdir="~/screenshots/",
+                    )
+
+
 
 
     def display_bg_img(self)-> None:
