@@ -1,14 +1,17 @@
 import os
 import tkinter as tk
 from pathlib import Path
-from tkinter import PhotoImage, ttk, messagebox
-from tkinter.filedialog import FileDialog, askopenfile
-from PIL import Image, ImageTk
+from tkinter import ttk, messagebox
+from tkinter.filedialog import askopenfile, askopenfilename
+from PIL import Image
 
 
 from ImageManager import ImageManager
 
+IMG_HOME = Path("/home/mike/code/100_days_of_code/final_projects/watermark_me/assets/img/")
 SAVE_DIR = Path(os.environ["OLDPWD"], "user_images")
+BG_STARTING_DIR = Path(IMG_HOME, "bg")
+FG_STARTING_DIR = Path(IMG_HOME, "fg")
 img_mgr = ImageManager()
 class Layout:
     img_mgr = ImageManager()
@@ -25,12 +28,13 @@ class Layout:
         self.entry_fg_position = ttk.Entry(frame, textvariable=self.fg_position)
 
         self.btn_select_bg_file = ttk.Button(frame, text="Choose background",
-                                             command=self.show_bg_file_dialog)
-        self.btn_select_fg_file = ttk.Button(frame)
+                                             command=self.choose_bg_file)
+        self.btn_select_fg_file = ttk.Button(frame, text="Choose foreground",
+                                             command=self.choose_fg_file)
         self.btn_select_bg = ttk.Button(frame,
                                         text="Choose an image to display",
                                         command=self.display_bg_img)
-        self.btn_select_fg = ttk.Button(frame, text="Choose a watermark",
+        self.btn_select_fg = ttk.Button(frame, text="Choose the foreground",
                                         command=self.display_fg_img
                                        )
         self.button_exit_app = ttk.Button(frame, text="Exit", command=exit)
@@ -48,13 +52,22 @@ class Layout:
         self.watermark_description_label = ttk.Label(frame, text="Watermark:")
         self.superimposed_img_display = ttk.Label(frame)
 
-    def show_bg_file_dialog(self):
-        askopenfile(parent=self.frame,
-                    title="Choose background image",
-                    initialdir="~/screenshots/",
-                    )
+    def choose_bg_file(self):
+        bg_img_path = askopenfilename(parent=self.frame,
+                              title="Choose background image",
+                              initialdir=BG_STARTING_DIR,
+                                      )
+        self.entry_bg_path.delete(0, tk.END)
+        self.entry_bg_path.insert(0, bg_img_path)
 
 
+    def choose_fg_file(self):
+        fg_img_path = askopenfilename(parent=self.frame,
+                              title="Choose foreground image",
+                              initialdir=FG_STARTING_DIR,
+                                      )
+        self.entry_fg_path.delete(0, tk.END)
+        self.entry_fg_path.insert(0, fg_img_path)
 
 
     def display_bg_img(self)-> None:
