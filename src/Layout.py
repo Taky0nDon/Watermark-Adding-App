@@ -3,56 +3,53 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import ttk, messagebox
 from tkinter.filedialog import askopenfile, askopenfilename
-from PIL import Image
 
 
 from ImageManager import ImageManager
+
 
 IMG_HOME = Path("/home/mike/code/100_days_of_code/final_projects/watermark_me/assets/img/")
 SAVE_DIR = Path(os.environ["OLDPWD"], "user_images")
 BG_STARTING_DIR = Path(IMG_HOME, "bg")
 FG_STARTING_DIR = Path(IMG_HOME, "fg")
-img_mgr = ImageManager()
+
+
 class Layout:
-    img_mgr = ImageManager()
     def __init__(self, frame):
         self.frame = frame
-        self.fg_path_stringvar = tk.StringVar()
-        self.bg_path_stringvar = tk.StringVar()
-        self.fg_position = tk.StringVar(value="0,0")
+        self.img_mgr = ImageManager()
+        self.strvar_fg_path = tk.StringVar()
+        self.strvar_bg_path = tk.StringVar()
+        self.strvar_fg_position = tk.StringVar(value="0,0")
+        self.strvar_fg_text = tk.StringVar()
 
-        self.entry_bg_path = ttk.Entry(frame, textvariable=self.bg_path_stringvar)
+        self.entry_bg_path = ttk.Entry(frame, textvariable=self.strvar_bg_path)
         self.entry_fg_path = ttk.Entry(frame,
-                                              textvariable=self.fg_path_stringvar
+                                              textvariable=self.strvar_fg_path
                                               )
-        self.entry_fg_position = ttk.Entry(frame, textvariable=self.fg_position)
+        self.entry_fg_position = ttk.Entry(frame, textvariable=self.strvar_fg_position)
+        self.entry_text = ttk.Entry(frame, textvariable=self.strvar_fg_text)
 
-        self.btn_select_bg_file = ttk.Button(frame, text="Choose background",
-                                             command=self.choose_bg_file)
-        self.btn_select_fg_file = ttk.Button(frame, text="Choose foreground",
-                                             command=self.choose_fg_file)
         self.btn_select_bg = ttk.Button(frame,
-                                        text="Choose an image to display",
+                                        text="choose background image",
                                         command=self.display_bg_img)
-        self.btn_select_fg = ttk.Button(frame, text="Choose the foreground",
-                                        command=self.display_fg_img
-                                       )
-        self.button_exit_app = ttk.Button(frame, text="Exit", command=exit)
+        self.btn_select_fg = ttk.Button(frame, text="choose the foreground",
+                                        command=self.display_fg_img)
+        self.btn_superimpose = ttk.Button(frame, text="Superimpose image",
+                                          command=self.display_superimposed_image)
+        self.btn_save = ttk.Button(frame, text="Save.", command=self.img_mgr.save_img)
+        self.btn_exit = ttk.Button(frame, text="exit", command=exit)
 
-        self.label_fg_position = ttk.Label(frame,
-                                           text="Overlay position (x, y)"
-                                           )
-        self.btn_superimpose = ttk.Button(frame, text="Overlay image",
-                                          command=self.display_superimposed_image
-                                         )
-        self.button_save = ttk.Button(frame, text="Save.", command=img_mgr.save_img)
+        self.label_bg_indicator = ttk.Label(frame, text="Background:")
+        self.label_fg_indicator = ttk.Label(frame, text="Foreground:")
+        self.label_fg_position = ttk.Label(frame, text="Foreground position (x, y)")
         self.label_bg_display = ttk.Label(frame)
         self.label_fg_display = ttk.Label(frame)
-        self.image_description_label = ttk.Label(frame, text="Image:")
-        self.watermark_description_label = ttk.Label(frame, text="Watermark:")
-        self.superimposed_img_display = ttk.Label(frame)
+        self.label_finalimg_display = ttk.Label(frame)
 
-    def choose_bg_file(self):
+    def choose_bg_file(self) -> None:
+        """ Inserts path of file chosen by user into background entry widget
+        """
         bg_img_path = askopenfilename(parent=self.frame,
                               title="Choose background image",
                               initialdir=BG_STARTING_DIR,
@@ -71,25 +68,27 @@ class Layout:
 
 
     def display_bg_img(self)-> None:
-        img_mgr.set_bg_image(self.bg_path_stringvar.get())
-        if img_mgr.pil_bg:
-            self.label_bg_display.configure(image=img_mgr.imgtk_bg)
+        self.choose_bg_file()
+        self.img_mgr.set_bg_image(self.strvar_bg_path.get())
+        if self.img_mgr.pil_bg:
+            self.label_bg_display.configure(image=self.img_mgr.imgtk_bg)
         else:
             self.show_error("no_path")
 
 
     def display_fg_img(self)-> None:
-        img_mgr.set_fg_image(self.fg_path_stringvar.get())
-        if img_mgr.pil_fg:
-            self.label_fg_display.configure(image=img_mgr.imgtk_fg)
+        self.choose_fg_file()
+        self.img_mgr.set_fg_image(self.strvar_fg_path.get())
+        if self.img_mgr.pil_fg:
+            self.label_fg_display.configure(image=self.img_mgr.imgtk_fg)
         else:
             self.show_error("no_path")
 
 
     def display_superimposed_image(self) -> None:
-        pos = self.fg_position.get()
-        img_mgr.generate_superimposed_img(pos)
-        self.superimposed_img_display.configure(image=img_mgr.imgtk_superimposed)
+        pos = self.strvar_fg_position.get()
+        self.img_mgr.generate_superimposed_img(pos)
+        self.label_finalimg_display.configure(image=self.img_mgr.imgtk_superimposed)
 
     def show_error(self, err, path=None):
         msg = "Something went wrong."
