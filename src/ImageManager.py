@@ -1,4 +1,4 @@
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageDraw, ImageFont
 from pathlib import Path
 from os import environ
 
@@ -14,6 +14,20 @@ class ImageManager:
         self.imgtk_superimposed = None
         self.fg_x_position = 0
         self.fg_y_position = 0
+
+
+    def draw_text(self, text2draw):
+        assert self.pil_bg is not None, "You must choose a background before\
+               you can add text!"
+        user_string = text2draw
+        with self.pil_bg as base:
+            txt = Image.new("RGBA", base.size, (255, 255, 255, 0)) 
+            fnt = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", 40)
+            drawer = ImageDraw.Draw(txt)
+            drawer.text((10,10), user_string, font=fnt, fill=(255, 255, 255, 128))
+            self.pil_bg = Image.alpha_composite(base.convert("RGBA"), txt)
+
+
 
     def save_img(self) -> None:
         """ Saves the superimposed image as a file """
