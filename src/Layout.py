@@ -37,6 +37,8 @@ class Layout:
                                         command=self.display_fg_img)
         self.btn_superimpose = ttk.Button(frame, text="Superimpose image",
                                           command=self.display_superimposed_image)
+        self.btn_drawtxt = ttk.Button(frame, text="Add text",
+                                      command=self.display_superimposed_image)
         self.btn_save = ttk.Button(frame, text="Save.", command=self.img_mgr.save_img)
         self.btn_exit = ttk.Button(frame, text="exit", command=exit)
 
@@ -86,6 +88,8 @@ class Layout:
 
 
     def display_superimposed_image(self) -> None:
+        if self.entry_text is not None:
+            self.img_mgr.draw_text(self.entry_text.get())
         pos = self.strvar_fg_position.get()
         self.img_mgr.generate_superimposed_img(pos)
         self.label_finalimg_display.configure(image=self.img_mgr.imgtk_superimposed)
