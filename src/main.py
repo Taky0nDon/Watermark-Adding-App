@@ -50,9 +50,12 @@ layout.btn_save.grid(column=0, row=8)
 layout.btn_exit.grid(column=1, row=8)
 
 # Adjust spans
+# Could I do this in a loop? 
 layout.get_frame_size()
-layout.entry_bg_path.grid(columnspan=layout.total_columns, sticky="WE")
-layout.entry_fg_path.grid(columnspan=layout.total_columns, sticky="WE")
+for child in mainframe.winfo_children():
+    if isinstance(child, ttk.Entry):
+        child.grid(columnspan=layout.total_columns, sticky="WE")
+
 print(layout.total_columns)
 
 layout.entry_bg_path.focus()
