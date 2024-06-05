@@ -31,9 +31,10 @@ layout.entry_fg_path.insert(0, TEST_FG.as_posix())
 for child in mainframe.winfo_children():
     child.grid_configure(padx=5, pady=5)
 
+# Establish rows and columns before adjusting span
 layout.btn_select_bg.grid(column=0, row=0, sticky="W")
 layout.entry_bg_path.grid(column=1, row=0)
-layout.btn_select_fg.grid(column=0, row=1, sticky="W")
+layout.btn_select_fg.grid(column=0, row=1)
 layout.entry_fg_path.grid(column=1, row=1)
 layout.label_fg_position.grid(column=0, row=2)
 layout.entry_fg_position.grid(column=1, row=2)
@@ -48,6 +49,11 @@ layout.label_finalimg_display.grid(column=0, row=7, columnspan=8)
 layout.btn_save.grid(column=0, row=8)
 layout.btn_exit.grid(column=1, row=8)
 
+# Adjust spans
+layout.get_frame_size()
+layout.entry_bg_path.grid(columnspan=layout.total_columns, sticky="WE")
+layout.entry_fg_path.grid(columnspan=layout.total_columns, sticky="WE")
+print(layout.total_columns)
 
 layout.entry_bg_path.focus()
 

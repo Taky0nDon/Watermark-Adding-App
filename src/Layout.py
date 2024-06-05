@@ -15,8 +15,9 @@ FG_STARTING_DIR = Path(IMG_HOME, "fg")
 
 
 class Layout:
-    def __init__(self, frame):
+    def __init__(self, frame: tk.Frame):
         self.frame = frame
+        self.total_columns, self.total_rows = 0, 0
         self.img_mgr = ImageManager()
         self.strvar_fg_path = tk.StringVar()
         self.strvar_bg_path = tk.StringVar()
@@ -101,3 +102,7 @@ class Layout:
         messagebox.showerror(self.frame,
                              message=msg
                             )
+
+    def get_frame_size(self):
+        if self.frame.grid_size() is not None:
+            self.total_columns, self.total_rows = self.frame.grid_size()
