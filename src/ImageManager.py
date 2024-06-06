@@ -6,6 +6,7 @@ class ImageManager:
     def __init__(self) -> None:
         self.SAVE_DIR = Path(environ["OLDPWD"], "user_images")
         self.IMAGE_RESIZE_FACTOR = 5
+        self.initial_pil_bg = None
         self.pil_bg = None
         self.imgtk_bg = None
         self.pil_fg = Image.new("RGBA", (1, 1))
@@ -17,14 +18,22 @@ class ImageManager:
 
 
     def draw_text(self, text2draw):
+        font_size = 100
+        self.pil_bg = self.initial_pil_bg
         assert self.pil_bg is not None, "You must choose a background before\
                you can add text!"
         user_string = text2draw
         with self.pil_bg as base:
             txt = Image.new("RGBA", base.size, (255, 255, 255, 0)) 
-            fnt = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", 40)
+            txt.resize(base.size)
+            fnt = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", font_size)
             drawer = ImageDraw.Draw(txt)
-            drawer.text((10,10), user_string, font=fnt, fill=(255, 255, 255, 128))
+            while fnt.getlength(user_string) > self.pil_bg.size[0] - 10:
+                font_size -= 1
+                fnt = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", font_size)
+            drawer.text((10,10), user_string, font=fnt, fill=(255, 255, 255, 128), font_size=100)
+            print(f"{fnt.getlength(user_string)}")
+            print(self.pil_bg.size)
             self.pil_bg = Image.alpha_composite(base.convert("RGBA"), txt)
 
 
@@ -47,6 +56,7 @@ class ImageManager:
         new_width = orig_width//self.IMAGE_RESIZE_FACTOR
         new_height = orig_height//self.IMAGE_RESIZE_FACTOR
         self.pil_bg = current_image.resize((new_width, new_height))
+        self.initial_pil_bg = self.pil_bg.copy()
         self.imgtk_bg = ImageTk.PhotoImage(self.pil_bg.resize((new_width, new_height)))
 
     def set_fg_image(self, path: str)-> None:
