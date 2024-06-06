@@ -56,8 +56,6 @@ for child in mainframe.winfo_children():
     if isinstance(child, ttk.Entry):
         child.grid(columnspan=layout.total_columns, sticky="WE")
 
-print(layout.total_columns)
-
 layout.entry_bg_path.focus()
 
 
