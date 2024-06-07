@@ -8,8 +8,7 @@ from tkinter.filedialog import askopenfile, askopenfilename
 from ImageManager import ImageManager
 
 
-IMG_HOME = Path("/home/mike/code/100_days_of_code/final_projects/watermark_me/assets/img/")
-SAVE_DIR = Path(os.environ["OLDPWD"], "user_images")
+IMG_HOME = Path("/home/mike/code/100_days_of_code/final_projects/watermark_me/assets/imgs/")
 BG_STARTING_DIR = Path(IMG_HOME, "bg")
 FG_STARTING_DIR = Path(IMG_HOME, "fg")
 
@@ -25,9 +24,7 @@ class Layout:
         self.strvar_fg_text = tk.StringVar()
 
         self.entry_bg_path = ttk.Entry(frame, textvariable=self.strvar_bg_path)
-        self.entry_fg_path = ttk.Entry(frame,
-                                              textvariable=self.strvar_fg_path
-                                              )
+        self.entry_fg_path = ttk.Entry(frame, textvariable=self.strvar_fg_path)
         self.entry_fg_position = ttk.Entry(frame, textvariable=self.strvar_fg_position)
         self.entry_text = ttk.Entry(frame, textvariable=self.strvar_fg_text)
 
@@ -59,7 +56,7 @@ class Layout:
                                       )
         self.entry_bg_path.delete(0, tk.END)
         self.entry_bg_path.insert(0, bg_img_path)
-
+        self.entry_bg_path.xview(len(bg_img_path))
 
     def choose_fg_file(self):
         fg_img_path = askopenfilename(parent=self.frame,
@@ -68,6 +65,7 @@ class Layout:
                                       )
         self.entry_fg_path.delete(0, tk.END)
         self.entry_fg_path.insert(0, fg_img_path)
+        self.entry_fg_path.xview(len(fg_img_path))
 
 
     def display_bg_img(self)-> None:
