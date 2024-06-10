@@ -4,14 +4,14 @@ from os import environ
 
 
 from tkinter.filedialog import asksaveasfilename
-from tkinter.messagebox import showinfo
+from tkinter.messagebox import showinfo,showerror
 
 class ImageManager:
     def __init__(self) -> None:
         self.SAVE_DIR = Path(environ["OLDPWD"], "user_images")
         self.IMAGE_RESIZE_FACTOR = 5
-        self.pil_bg_initial = None
         self.pil_bg = None
+        self.pil_bg_notext = self.pil_bg
         self.imgtk_bg = None
         self.pil_fg = Image.new("RGBA", (1, 1))
         self.imgtk_fg = None
@@ -23,15 +23,12 @@ class ImageManager:
 
 
     def draw_text(self, text2draw):
+        print(f"{type(self.pil_bg)=}")
         assert self.pil_bg is not None, "You must choose a background before\
                you can add text!"
         font_size = 100
         if self.text_exists:
-            self.pil_bg = self.pil_bg_initial
-        elif self.pil_superimposed is None:
-            self.pil_bg = self.pil_bg_initial
-        else:
-            self.pil_bg = self.pil_superimposed
+            self.pil_bg = self.pil_bg_notext
         user_string = text2draw
         with self.pil_bg as base:
             txt = Image.new("RGBA", base.size, (255, 255, 255, 0)) 
@@ -42,6 +39,7 @@ class ImageManager:
                 fnt = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", font_size)
             drawer.text((10,10), user_string, font=fnt, fill=(255, 255, 255, 128), font_size=100)
             self.pil_bg = Image.alpha_composite(base.convert("RGBA"), txt)
+            self.imgtk_bg = self.tkize_image(self.pil_bg)
             self.text_exists = True
 
 
@@ -65,14 +63,13 @@ class ImageManager:
         and assigns it to the `pil_bg` attribute. """
         image_path = Path(path)
         assert path_is_valid(image_path), "File does not exist!"
-
         new_bg_img = Image.open(image_path)
         orig_width, orig_height = new_bg_img.size
         new_width = orig_width//self.IMAGE_RESIZE_FACTOR
         new_height = orig_height//self.IMAGE_RESIZE_FACTOR
         self.pil_bg = new_bg_img.resize((new_width, new_height))
-        self.pil_bg_initial = self.pil_bg.copy()
-        self.imgtk_bg = ImageTk.PhotoImage(self.pil_bg)
+        self.pil_bg_notext = self.pil_bg.copy()
+        self.imgtk_bg = self.tkize_image(self.pil_bg)
 
     def set_fg_image(self, path: str)-> None:
         fg_path = Path(path)
@@ -82,7 +79,7 @@ class ImageManager:
         new_width = orig_width//self.IMAGE_RESIZE_FACTOR
         new_height = orig_height//self.IMAGE_RESIZE_FACTOR
         self.pil_fg = new_watermark_image.resize((new_width, new_height))
-        self.imgtk_fg = ImageTk.PhotoImage(self.pil_fg)
+        self.imgtk_fg = self.tkize_image(self.pil_fg)
 
 
     def set_fg_position(self, pos_coords: str)-> None:
@@ -93,7 +90,7 @@ class ImageManager:
 
     def generate_superimposed_img(self, fg_pos: str)-> None:
         if self.pil_bg is None:
-            messagebox.showerror(title="No background selected!",
+            showerror(title="No background selected!",
                                  message="You must choose a background image."
                                  )
             return
@@ -102,19 +99,22 @@ class ImageManager:
         self.fg_y_position = coords[1]
         pil_bg = self.pil_bg.convert(mode="RGBA")
         pil_fg = self.pil_fg.convert(mode="RGBA")
-        try:
-            pil_bg.paste(pil_fg, 
-                         box=(self.fg_x_position, self.fg_y_position),
-                         mask=pil_fg
-                         )
-        except AttributeError:
-            pil_bg = pil_fg
+        pil_bg.paste(pil_fg, 
+                     box=(self.fg_x_position, self.fg_y_position),
+                     mask=pil_fg
+                     )
+        self.pil_bg_notext.paste(pil_fg,
+                                 box=(self.fg_x_position, self.fg_y_position),
+                                 mask=pil_fg)
         self.pil_superimposed = pil_bg
-        self.pil_bg = self.pil_superimposed
-        self.imgtk_superimposed = ImageTk.PhotoImage(self.pil_superimposed)
+        self.imgtk_superimposed = self.tkize_image(self.pil_superimposed)
         # the alpha channel is caushing all the negative space to appear the same color as
         # the blue part of the icon. Need to get paste to respect transparent parts of 
         # watermark
+
+
+    def tkize_image(self, image: Image.Image):
+        return ImageTk.PhotoImage(image)
 
 
 def path_is_valid(path: Path) -> bool:
