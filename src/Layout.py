@@ -4,6 +4,8 @@ from pathlib import Path
 from tkinter import ttk, messagebox
 from tkinter.filedialog import askopenfile, askopenfilename
 
+from PIL import ImageTk
+
 
 from ImageManager import ImageManager
 
@@ -36,7 +38,7 @@ class Layout:
         self.btn_superimpose = ttk.Button(frame, text="Superimpose image",
                                           command=self.display_superimposed_image)
         self.btn_drawtxt = ttk.Button(frame, text="Add text",
-                                      command=self.display_superimposed_image)
+                                      command=self.display_superimposed_text)
         self.btn_save = ttk.Button(frame, text="Save.", command=self.img_mgr.save_img)
         self.btn_exit = ttk.Button(frame, text="exit", command=exit)
 
@@ -71,27 +73,33 @@ class Layout:
     def display_bg_img(self)-> None:
         self.choose_bg_file()
         self.img_mgr.set_bg_image(self.strvar_bg_path.get())
-        if self.img_mgr.pil_bg:
-            self.label_bg_display.configure(image=self.img_mgr.imgtk_bg)
-        else:
-            self.show_error("no_path")
+        self.label_bg_display.configure(
+                                        image=self.img_mgr.imgtk_bg
+                                        )
 
 
     def display_fg_img(self)-> None:
         self.choose_fg_file()
         self.img_mgr.set_fg_image(self.strvar_fg_path.get())
-        if self.img_mgr.pil_fg:
-            self.label_fg_display.configure(image=self.img_mgr.imgtk_fg)
-        else:
-            self.show_error("no_path")
+        self.label_fg_display.configure(image=self.img_mgr.imgtk_fg)
 
 
     def display_superimposed_image(self) -> None:
-        if self.entry_text is not None:
-            self.img_mgr.draw_text(self.entry_text.get())
         pos = self.strvar_fg_position.get()
         self.img_mgr.generate_superimposed_img(pos)
+        if self.entry_text is not None:
+            self.img_mgr.draw_text(self.entry_text.get())
         self.label_finalimg_display.configure(image=self.img_mgr.imgtk_superimposed)
+
+
+    def display_superimposed_text(self) -> None:
+        self.img_mgr.draw_text(self.entry_text.get())
+        self.label_finalimg_display.configure(image=self.img_mgr.imgtk_bg)
+
+    def display_drawn_text(self):
+        self.img_mgr.draw_text(self.entry_text.get())
+        self.label_finalimg_display.configure(image=self.img_mgr.imgtk_bg)
+
 
     def show_error(self, err, path=None):
         msg = "Something went wrong."
