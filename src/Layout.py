@@ -55,6 +55,7 @@ class Layout:
         bg_img_path = askopenfilename(parent=self.frame,
                               title="Choose background image",
                               initialdir=BG_STARTING_DIR,
+                              initialfile=sorted(os.listdir(BG_STARTING_DIR))[0]
                                       )
         self.entry_bg_path.delete(0, tk.END)
         self.entry_bg_path.insert(0, bg_img_path)
@@ -64,6 +65,7 @@ class Layout:
         fg_img_path = askopenfilename(parent=self.frame,
                               title="Choose foreground image",
                               initialdir=FG_STARTING_DIR,
+                              initialfile=sorted(os.listdir(FG_STARTING_DIR))[0]
                                       )
         self.entry_fg_path.delete(0, tk.END)
         self.entry_fg_path.insert(0, fg_img_path)
