@@ -13,13 +13,12 @@ from ImageManager import ImageManager
 IMG_HOME = Path("/home/mike/code/100_days_of_code/final_projects/watermark_me/assets/imgs/")
 BG_STARTING_DIR = Path(IMG_HOME, "bg")
 FG_STARTING_DIR = Path(IMG_HOME, "fg")
-
+img_mgr = ImageManager()
 
 class Layout:
     def __init__(self, frame: tk.Frame):
         self.frame = frame
         self.total_columns, self.total_rows = 0, 0
-        self.img_mgr = ImageManager()
         self.strvar_fg_path = tk.StringVar()
         self.strvar_bg_path = tk.StringVar()
         self.strvar_fg_position = tk.StringVar(value="0,0")
@@ -39,7 +38,7 @@ class Layout:
                                           command=self.display_superimposed_image)
         self.btn_drawtxt = ttk.Button(frame, text="Add text",
                                       command=self.display_superimposed_text)
-        self.btn_save = ttk.Button(frame, text="Save.", command=self.img_mgr.save_img)
+        self.btn_save = ttk.Button(frame, text="Save.", command=img_mgr.save_img)
         self.btn_exit = ttk.Button(frame, text="exit", command=exit)
 
         self.label_bg_indicator = ttk.Label(frame, text="Background:")
@@ -54,7 +53,7 @@ class Layout:
         """
         bg_img_path = askopenfilename(parent=self.frame,
                               title="Choose background image",
-                              initialdir=BG_STARTING_DIR,
+                              initialdir="/home/mike/idontexist",
                               initialfile=sorted(os.listdir(BG_STARTING_DIR))[0]
                                       )
         self.entry_bg_path.delete(0, tk.END)
@@ -74,42 +73,34 @@ class Layout:
 
     def display_bg_img(self)-> None:
         self.choose_bg_file()
-        self.img_mgr.set_bg_image(self.strvar_bg_path.get())
+        img_mgr.set_bg_image(self.strvar_bg_path.get())
         self.label_bg_display.configure(
-                                        image=self.img_mgr.imgtk_bg
+                                        image=img_mgr.imgtk_bg
                                         )
 
 
     def display_fg_img(self)-> None:
         self.choose_fg_file()
-        self.img_mgr.set_fg_image(self.strvar_fg_path.get())
-        self.label_fg_display.configure(image=self.img_mgr.imgtk_fg)
+        img_mgr.set_fg_image(self.strvar_fg_path.get())
+        self.label_fg_display.configure(image=img_mgr.imgtk_fg)
 
 
     def display_superimposed_image(self) -> None:
         pos = self.strvar_fg_position.get()
-        self.img_mgr.generate_superimposed_img(pos)
+        img_mgr.generate_superimposed_img(pos)
         if self.entry_text is not None:
-            self.img_mgr.draw_text(self.entry_text.get())
-        self.label_finalimg_display.configure(image=self.img_mgr.imgtk_superimposed)
+            img_mgr.draw_text(self.entry_text.get())
+        self.label_finalimg_display.configure(image=img_mgr.imgtk_superimposed)
 
 
     def display_superimposed_text(self) -> None:
-        self.img_mgr.draw_text(self.entry_text.get())
-        self.label_finalimg_display.configure(image=self.img_mgr.imgtk_bg)
+        img_mgr.draw_text(self.entry_text.get())
+        self.label_finalimg_display.configure(image=img_mgr.imgtk_bg)
 
     def display_drawn_text(self):
-        self.img_mgr.draw_text(self.entry_text.get())
-        self.label_finalimg_display.configure(image=self.img_mgr.imgtk_bg)
+        img_mgr.draw_text(self.entry_text.get())
+        self.label_finalimg_display.configure(image=img_mgr.imgtk_bg)
 
-
-    def show_error(self, err, path=None):
-        msg = "Something went wrong."
-        if err == "no_path":
-            msg = f"The path {path} does not exit"
-        messagebox.showerror(self.frame,
-                             message=msg
-                            )
 
     def get_frame_size(self):
         if self.frame.grid_size() is not None:

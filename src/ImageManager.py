@@ -22,7 +22,7 @@ class ImageManager:
         self.text_exists = False
 
 
-    def draw_text(self, text2draw):
+    def draw_text(self, text2draw: str) -> None:
         print(f"{type(self.pil_bg)=}")
         assert self.pil_bg is not None, "You must choose a background before\
                you can add text!"
@@ -44,7 +44,7 @@ class ImageManager:
 
 
 
-    def save_img(self) -> None:
+    def save_img(self)-> None:
         """ Saves the superimposed image as a file """
         SAVE_DIR = Path(Path(environ["PWD"]).parent,
                         "assets",
@@ -62,7 +62,7 @@ class ImageManager:
         """ Creates a new Image object based on a user provided path,
         and assigns it to the `pil_bg` attribute. """
         image_path = Path(path)
-        assert path_is_valid(image_path), "File does not exist!"
+        assert image_path.exists(), "File does not exist!"
         new_bg_img = Image.open(image_path)
         orig_width, orig_height = new_bg_img.size
         new_width = orig_width//self.IMAGE_RESIZE_FACTOR
@@ -73,7 +73,7 @@ class ImageManager:
 
     def set_fg_image(self, path: str)-> None:
         fg_path = Path(path)
-        assert path_is_valid(fg_path), "File does not exist!"
+        assert fg_path.exists(), "File does not exist!"
         new_watermark_image = Image.open(fg_path)
         orig_width, orig_height = new_watermark_image.size
         new_width = orig_width//self.IMAGE_RESIZE_FACTOR
@@ -108,19 +108,9 @@ class ImageManager:
                                  mask=pil_fg)
         self.pil_superimposed = pil_bg
         self.imgtk_superimposed = self.tkize_image(self.pil_superimposed)
-        # the alpha channel is caushing all the negative space to appear the same color as
-        # the blue part of the icon. Need to get paste to respect transparent parts of 
-        # watermark
-
 
     def tkize_image(self, image: Image.Image):
         return ImageTk.PhotoImage(image)
-
-
-def path_is_valid(path: Path) -> bool:
-    if not path.exists():
-        return False
-    return True
 
 
 def get_img_display_size(img: Image.Image) -> tuple[int, int]:
