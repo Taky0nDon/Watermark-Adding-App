@@ -48,6 +48,26 @@ class Layout:
         self.label_fg_display = ttk.Label(frame)
         self.label_finalimg_display = ttk.Label(frame)
 
+    def create_ui(self)-> None:
+
+        self.btn_select_bg.grid(column=0, row=0, sticky="WE")
+        self.entry_bg_path.grid(column=1, row=0)
+        self.btn_select_fg.grid(column=0, row=1, sticky="WE")
+        self.entry_fg_path.grid(column=1, row=1)
+        self.label_fg_position.grid(column=0, row=2)
+        self.entry_fg_position.grid(column=1, row=2)
+        self.entry_text.grid(column=1, row=3, columnspan=7, sticky="WE")
+        self.btn_drawtxt.grid(column=0, row=3, sticky="WE")
+        self.btn_superimpose.grid(column=0, row=6, sticky="EW")
+        self.label_bg_indicator.grid(column=0, row=4)
+        self.label_fg_indicator.grid(column=1, row=4)
+        self.label_fg_display.grid(column=1, row=5)
+        self.label_bg_display.grid(column=0, row=5)
+        self.label_finalimg_display.grid(column=0, row=7, columnspan=8)
+        self.btn_save.grid(column=0, row=8, sticky="WE")
+        self.btn_exit.grid(column=1, row=8, sticky="EW")
+
+
     def choose_bg_file(self) -> None:
         """ Inserts path of file chosen by user into background entry widget
         """
