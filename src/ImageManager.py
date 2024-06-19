@@ -40,7 +40,7 @@ class ImageManager:
                 fnt = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", font_size)
             drawer.text((10,10), user_string, font=fnt, fill=(255, 255, 255, 128), font_size=100)
             self.pil_bg = Image.alpha_composite(base.convert("RGBA"), txt)
-            self.imgtk_bg = self.tkize_image(self.pil_bg)
+            self.imgtk_bg = ImageTk.PhotoImage(self.pil_bg)
             self.text_exists = True
 
 
@@ -70,7 +70,7 @@ class ImageManager:
         new_height = orig_height//self.IMAGE_RESIZE_FACTOR
         self.pil_bg = new_bg_img.resize((new_width, new_height))
         self.pil_bg_notext = self.pil_bg.copy()
-        self.imgtk_bg = self.tkize_image(self.pil_bg)
+        self.imgtk_bg = ImageTk.PhotoImage(self.pil_bg)
 
     def set_fg_image(self, path: str)-> None:
         fg_path = Path(path)
@@ -80,7 +80,7 @@ class ImageManager:
         new_width = orig_width//self.IMAGE_RESIZE_FACTOR
         new_height = orig_height//self.IMAGE_RESIZE_FACTOR
         self.pil_fg = new_watermark_image.resize((new_width, new_height))
-        self.imgtk_fg = self.tkize_image(self.pil_fg)
+        self.imgtk_fg = ImageTk.PhotoImage(self.pil_fg)
 
 
     def set_fg_position(self, pos_coords: str)-> None:
@@ -108,11 +108,7 @@ class ImageManager:
                                  box=(self.fg_x_position, self.fg_y_position),
                                  mask=pil_fg)
         self.pil_superimposed = pil_bg
-        self.imgtk_superimposed = self.tkize_image(self.pil_superimposed)
-
-    def tkize_image(self, image: Image.Image):
-        return ImageTk.PhotoImage(image)
-
+        self.imgtk_superimposed = ImageTk.PhotoImage(self.pil_superimposed)
 
 def get_img_display_size(img: Image.Image) -> tuple[int, int]:
     original_dim = img.size # (w, h)
