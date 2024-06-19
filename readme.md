@@ -9,14 +9,16 @@ file provided by the user.
 
 1. If you don't already have Python installed, install it. [Latest version here]
 (https://www.python.org/downloads/release/python-3124/)
-2. Clone this repository:
-`git clone
-`py -m pip install -r requirements.txt`
-This will install pil, if it is not already. If you wish, you may activate a
-virtual environment for this step.
-3. Navigate to ./src/ and run `python3 main.py`. this will open the tkinter GUI.
-4. Click on 'choose background image'. The default folder most likely doesn't
-exist on your system. Navigate to the picture you wish to make your background.
+2. Clone this repository and install the required third party libraries:
+```
+git clone https://github.com/Taky0nDon/Watermark-Adding-App.git
+cd Watermark-Adding-App
+python3 -m pip install -r requirements.txt
+```
+(If you are having trouble with this process, open an
+issue and I will do my best to be of assistance.)
+3. Run `python3 src/main.py` to start the program.
+4. Click on 'choose background image'. Navigate to the picture you wish to make your background.
 5. Do the same after clicking 'choose the foreground.'
 6. Type some text into the box next to the 'Add text' button. The text will be 
 superimposed over your background.
