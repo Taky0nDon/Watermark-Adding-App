@@ -7,12 +7,13 @@ file provided by the user.
 
 ## How it Works:
 
-1. Make sure python is installed on your sytem.
-2. Pillow 10.3.0 is the only third party requirement for this program. In order
-to download it, navigate to the `watermark_me` parent directory and run
+1. If you don't already have Python installed, install it. [Latest version here]
+(https://www.python.org/downloads/release/python-3124/)
+2. Clone this repository:
+`git clone
 `py -m pip install -r requirements.txt`
-This will install pip. If you wish, you may activate a virtual environment
-for this step.
+This will install pil, if it is not already. If you wish, you may activate a
+virtual environment for this step.
 3. Navigate to ./src/ and run `python3 main.py`. this will open the tkinter GUI.
 4. Click on 'choose background image'. The default folder most likely doesn't
 exist on your system. Navigate to the picture you wish to make your background.
