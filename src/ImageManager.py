@@ -1,6 +1,7 @@
 from PIL import Image, ImageTk, ImageDraw, ImageFont
 from pathlib import Path
 from os import environ
+from tkinter import PhotoImage
 
 
 from tkinter.filedialog import asksaveasfilename
@@ -10,7 +11,7 @@ class ImageManager:
     def __init__(self) -> None:
         self.SAVE_DIR = Path(environ["OLDPWD"], "user_images")
         self.IMAGE_RESIZE_FACTOR = 5
-        self.pil_bg = None
+        self.pil_bg = Image.new("RGBA", (1, 1))
         self.pil_bg_notext = self.pil_bg
         self.imgtk_bg = None
         self.pil_fg = Image.new("RGBA", (1, 1))
