@@ -46,6 +46,7 @@ class ImageManager:
             drawer.text((10,10), user_string, font=fnt, fill=(255, 255, 255, 128), font_size=100)
             self.pil_bg = Image.alpha_composite(base.convert("RGBA"), txt)
             self.imgtk_bg = ImageTk.PhotoImage(self.pil_bg)
+            self.pil_superimposed = self.pil_bg
             self.text_exists = True
 
 
