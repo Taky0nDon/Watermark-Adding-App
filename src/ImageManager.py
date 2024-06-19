@@ -7,10 +7,16 @@ from tkinter import PhotoImage
 from tkinter.filedialog import asksaveasfilename
 from tkinter.messagebox import showinfo,showerror
 
+
+IMAGE_RESIZE_FACTOR = 5
+SAVE_DIR = Path(Path(environ["PWD"]).parent,
+                "assets",
+                "imgs",
+                "user_images")
+
+
 class ImageManager:
     def __init__(self) -> None:
-        self.SAVE_DIR = Path(environ["OLDPWD"], "user_images")
-        self.IMAGE_RESIZE_FACTOR = 5
         self.pil_bg = Image.new("RGBA", (1, 1))
         self.pil_bg_notext = self.pil_bg
         self.imgtk_bg = None
@@ -46,10 +52,6 @@ class ImageManager:
 
     def save_img(self)-> None:
         """ Saves the superimposed image as a file """
-        SAVE_DIR = Path(Path(environ["PWD"]).parent,
-                        "assets",
-                        "imgs",
-                        "user_images")
         if self.pil_superimposed is None:
             showinfo(title="No selection", message="You have no image to save!")
         else:
@@ -65,8 +67,8 @@ class ImageManager:
         assert image_path.exists(), "File does not exist!"
         new_bg_img = Image.open(image_path)
         orig_width, orig_height = new_bg_img.size
-        new_width = orig_width//self.IMAGE_RESIZE_FACTOR
-        new_height = orig_height//self.IMAGE_RESIZE_FACTOR
+        new_width = orig_width//IMAGE_RESIZE_FACTOR
+        new_height = orig_height//IMAGE_RESIZE_FACTOR
         self.pil_bg = new_bg_img.resize((new_width, new_height))
         self.pil_bg_notext = self.pil_bg.copy()
         self.imgtk_bg = ImageTk.PhotoImage(self.pil_bg)
@@ -76,8 +78,8 @@ class ImageManager:
         assert fg_path.exists(), "File does not exist!"
         new_watermark_image = Image.open(fg_path)
         orig_width, orig_height = new_watermark_image.size
-        new_width = orig_width//self.IMAGE_RESIZE_FACTOR
-        new_height = orig_height//self.IMAGE_RESIZE_FACTOR
+        new_width = orig_width//IMAGE_RESIZE_FACTOR
+        new_height = orig_height//IMAGE_RESIZE_FACTOR
         self.pil_fg = new_watermark_image.resize((new_width, new_height))
         self.imgtk_fg = ImageTk.PhotoImage(self.pil_fg)
 
