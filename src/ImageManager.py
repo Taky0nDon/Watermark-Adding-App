@@ -18,8 +18,7 @@ class ImageManager:
         self.imgtk_fg = None
         self.pil_superimposed = None
         self.imgtk_superimposed = None
-        self.fg_x_position = 0
-        self.fg_y_position = 0
+        self.fg_position: tuple[int, int] = 0, 0
         self.text_exists = False
 
 
@@ -85,8 +84,7 @@ class ImageManager:
 
     def set_fg_position(self, pos_coords: str)-> None:
         coords = [int(e) for e in pos_coords]
-        self.fg_x_position = coords[0]
-        self.fg_y_position = coords[1]
+        self.fg_position = (coords[0], coords[1])
 
 
     def generate_superimposed_img(self, fg_pos: str)-> None:
