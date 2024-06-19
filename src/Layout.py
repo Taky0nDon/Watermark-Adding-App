@@ -1,10 +1,10 @@
 import os
 import tkinter as tk
 from pathlib import Path
-from tkinter import ttk, messagebox
+from tkinter import PhotoImage, ttk, messagebox
 from tkinter.filedialog import askopenfile, askopenfilename
 
-from PIL import ImageTk
+from PIL import ImageTk, Image
 
 
 from ImageManager import ImageManager
@@ -95,7 +95,7 @@ class Layout:
         self.choose_bg_file()
         img_mgr.set_bg_image(self.strvar_bg_path.get())
         self.label_bg_display.configure(
-                                        image=img_mgr.imgtk_bg
+                                        image=PhotoImage(data=list(img_mgr.pil_bg.getdata()))
                                         )
 
 
