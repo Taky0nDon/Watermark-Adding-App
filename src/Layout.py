@@ -73,7 +73,7 @@ class Layout:
         """
         bg_img_path = askopenfilename(parent=self.frame,
                               title="Choose background image",
-                              initialdir="/home/mike/idontexist",
+                              initialdir=BG_STARTING_DIR,
                               initialfile=sorted(os.listdir(BG_STARTING_DIR))[0]
                                       )
         self.entry_bg_path.delete(0, tk.END)
@@ -94,15 +94,13 @@ class Layout:
     def display_bg_img(self)-> None:
         self.choose_bg_file()
         img_mgr.set_bg_image(self.strvar_bg_path.get())
-        self.label_bg_display.configure(
-                                        image=PhotoImage(data=list(img_mgr.pil_bg.getdata()))
-                                        )
+        self.label_bg_display.configure(image=ImageTk.PhotoImage(img_mgr.pil_bg))
 
 
     def display_fg_img(self)-> None:
         self.choose_fg_file()
         img_mgr.set_fg_image(self.strvar_fg_path.get())
-        self.label_fg_display.configure(image=img_mgr.imgtk_fg)
+        self.label_fg_display.configure(image=ImageTk.PhotoImage(img_mgr.pil_fg))
 
 
     def display_superimposed_image(self) -> None:
