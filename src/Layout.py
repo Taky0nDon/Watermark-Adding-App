@@ -94,13 +94,13 @@ class Layout:
     def display_bg_img(self)-> None:
         self.choose_bg_file()
         img_mgr.set_bg_image(self.strvar_bg_path.get())
-        self.label_bg_display.configure(image=ImageTk.PhotoImage(img_mgr.pil_bg))
+        self.label_bg_display.configure(image=img_mgr.imgtk_bg)
 
 
     def display_fg_img(self)-> None:
         self.choose_fg_file()
         img_mgr.set_fg_image(self.strvar_fg_path.get())
-        self.label_fg_display.configure(image=ImageTk.PhotoImage(img_mgr.pil_fg))
+        self.label_fg_display.configure(image=img_mgr.imgtk_fg)
 
 
     def display_superimposed_image(self) -> None:
