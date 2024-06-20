@@ -1,6 +1,6 @@
 from PIL import Image, ImageTk, ImageDraw, ImageFont
 from pathlib import Path
-from os import environ
+from os import getcwd
 from tkinter import PhotoImage
 
 
@@ -9,7 +9,7 @@ from tkinter.messagebox import showinfo,showerror
 
 
 IMAGE_RESIZE_FACTOR = 5
-SAVE_DIR = Path(Path(environ["PWD"]).parent,
+SAVE_DIR = Path(Path(getcwd()).parent,
                 "assets",
                 "imgs",
                 "user_images")
@@ -29,9 +29,6 @@ class ImageManager:
 
 
     def draw_text(self, text2draw: str) -> None:
-        print(f"{type(self.pil_bg)=}")
-        assert self.pil_bg is not None, "You must choose a background before\
-               you can add text!"
         font_size = 100
         if self.text_exists:
             self.pil_bg = self.pil_bg_notext
@@ -56,8 +53,9 @@ class ImageManager:
         if self.pil_superimposed is None:
             showinfo(title="No selection", message="You have no image to save!")
         else:
+            img = ImageTk.getimage(self.imgtk_superimposed)
             new_file_path = asksaveasfilename(initialdir=SAVE_DIR)
-            self.pil_superimposed.save(fp=f"{new_file_path}.tiff", format='tiff')
+            img.save(fp=f"{new_file_path}.tiff", format='tiff')
             
 
 
@@ -109,7 +107,7 @@ class ImageManager:
                                  box=(self.fg_x_position, self.fg_y_position),
                                  mask=pil_fg)
         self.pil_superimposed = pil_bg
-        self.imgtk_superimposed = ImageTk.PhotoImage(self.pil_superimposed)
+        self.imgtk_superimposed = ImageTk.PhotoImage(self.pil_bg_notext)
 
 def get_img_display_size(img: Image.Image) -> tuple[int, int]:
     original_dim = img.size # (w, h)
