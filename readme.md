@@ -22,7 +22,10 @@ issue and I will do my best to be of assistance.)
 5. Do the same after clicking 'choose the foreground.'
 6. Type some text into the box next to the 'Add text' button. The text will be 
 superimposed over your background.
-7. Click 'Superimpose image' to apply the foreground to the background and text
+7. You can change where the foreground will appear by entering two integers
+separated by a comma in the `Foreground position (x.y)` box. Experiment with
+different pairs of integers and see where your foreground goes!
+8. Click 'Superimpose image' to apply the foreground to the background and text
 combination. If you wish for the text to be above the foreground, simply click
 'Add text' again, and the new text will appear on top of the foreground and the
 background.
