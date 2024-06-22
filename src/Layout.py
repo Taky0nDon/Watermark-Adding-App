@@ -39,7 +39,6 @@ class Layout:
         self.entry_fg_position = ttk.Entry(self.mainframe, textvariable=self.strvar_fg_position)
         self.entry_text = ttk.Entry(self.mainframe, textvariable=self.strvar_fg_text)
 
-        breakpoint()
         self.btn_select_fg = ttk.Button(self.mainframe, text="choose the foreground",
                                         command=self.display_fg_img)
         self.btn_select_bg = ttk.Button(self.mainframe,
