@@ -1,13 +1,8 @@
-import io
-import os
-import tkinter as tk
-from pathlib import Path, PurePath
-from tkinter import ttk
+from pathlib import PurePath
 
-from PIL import ImageTk
-from PIL import Image
 
 from Layout import Layout
+
 
 DEFAULT_FOLDER = PurePath("/home", "mike", "bg")
 WATERMARK_DIR = Path(Path(os.getcwd()).parent, "assets", "img")
