@@ -20,14 +20,13 @@ class Layout:
         self.root = tk.Tk()
         self.root.title("Watermark Me")
         self.mainframe = ttk.Frame(self.root, padding="3 3 12 12")
-        self.mainframe.grid(column=0, row=0, sticky="NWSE")
+        self.mainframe.grid(column=0, row=0, sticky="NWSE") # places frame in
+        # window grid. frame contains its own grid
         self.create_ui()
         self.root.mainloop()
         #self.total_columns, self.total_rows = 0, 0
 
     def create_ui(self)-> None:
-       # for child in self.mainframe.winfo_children():
-       #     child.grid_configure(padx=5, pady=5)
 
         self.strvar_fg_path = tk.StringVar()
         self.strvar_bg_path = tk.StringVar()
@@ -73,6 +72,8 @@ class Layout:
         self.label_finalimg_display.grid(column=0, row=7, columnspan=8)
         self.btn_save.grid(column=0, row=8, sticky="WE")
         self.btn_exit.grid(column=1, row=8, sticky="EW")
+        for child in self.mainframe.winfo_children():
+           child.grid_configure(padx=5, pady=5)
 
         # self.get_frame_size()
         #for child in self.mainframe.winfo_children():
